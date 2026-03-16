@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const Dashboard = () => (
   <div className="min-h-screen pt-20 flex flex-col items-center justify-center bg-[#0F0B1A]">
@@ -16,7 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<div className="min-h-screen pt-20 flex justify-center"><h1 className="text-3xl">Signup Page</h1></div>} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
