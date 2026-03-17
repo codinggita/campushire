@@ -6,6 +6,8 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import Jobs from './pages/Jobs';
 
+import JobDetails from './pages/JobDetails';
+
 const Dashboard = () => (
   <div className="min-h-screen pt-20 flex flex-col items-center justify-center bg-[#0F0B1A]">
     <h1 className="text-4xl font-extrabold text-white">Welcome to your <span className="text-yellow-400">Dashboard</span></h1>
@@ -21,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/jobs" element={<Jobs />} />
+        <Route path="/jobs/:id" element={<JobDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
