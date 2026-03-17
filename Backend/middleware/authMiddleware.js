@@ -29,4 +29,20 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const isCompany = (req, res, next) => {
+  if (req.user && req.user.role === 'company') {
+    next();
+  } else {
+    res.status(403).json({ error: 'Unauthorized access' });
+  }
+};
+
+const isStudent = (req, res, next) => {
+  if (req.user && req.user.role === 'student') {
+    next();
+  } else {
+    res.status(403).json({ error: 'Unauthorized access' });
+  }
+};
+
+module.exports = { protect, isCompany, isStudent };

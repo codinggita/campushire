@@ -139,10 +139,46 @@ exports.applyJob = async (req, res) => {
 
 exports.getUserApplications = async (req, res) => {
   try {
-    const applications = await Application.find({ userId: req.params.id }).populate('jobId');
-    res.json({ success: true, applications });
+    const userId = req.user._id;
+    const applications = await Application.find({ userId }).populate('jobId');
+    
+    // Simulate formatting as requested
+    const appliedJobs = applications.map(app => app.jobId);
+    const interviews = []; // Mock
+    const status = applications.map(app => app.status); // Mock status
+    
+    res.json({ appliedJobs, interviews, status });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Company Specific Endpoints
+exports.getCompanyJobs = async (req, res) => {
+  try {
+    const companyId = req.user._id;
+    const postedJobs = await Job.find({ companyId });
+    res.json({ postedJobs });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error fetching company jobs' });
+  }
+};
+
+exports.getCompanyApplications = async (req, res) => {
+  try {
+    const companyId = req.user._id;
+    const companyJobs = await Job.find({ companyId }).select('_id');
+    const jobIds = companyJobs.map(job => job._id);
+    
+    const applications = await Application.find({ jobId: { $in: jobIds } })
+      .populate('userId', 'name email skills')
+      .populate('jobId', 'title');
+      
+    res.json({ applications });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error fetching company applications' });
   }
 };
 

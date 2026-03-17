@@ -1,31 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { getJobs, getJobById, applyJob, getUserApplications, getSavedJobs } = require('../controllers/jobController');
-const { protect } = require('../middleware/authMiddleware');
+const { getJobs, getJobById, applyJob, getUserApplications, getCompanyJobs, getCompanyApplications, getSavedJobs } = require('../controllers/jobController');
+const { protect, isStudent, isCompany } = require('../middleware/authMiddleware');
 
-// @route   GET /api/jobs
-// @desc    Get all jobs
-// @access  Public
+// Public
 router.get('/jobs', getJobs);
-
-// @route   GET /api/jobs/:id
-// @desc    Get single job by ID
-// @access  Public
 router.get('/jobs/:id', getJobById);
+router.post('/applications', applyJob); 
 
-// @route   POST /api/applications
-// @desc    Apply for a job
-// @access  Public
-router.post('/applications', applyJob);
+// Student Role Dashboard
+router.get('/applications/user/', protect, isStudent, getUserApplications);
 
-// @route   GET /api/applications/user/:id
-// @desc    Get user applications
-// @access  Private
-router.get('/applications/user/:id', protect, getUserApplications);
+// Company Role Dashboard
+router.get('/jobs/company/', protect, isCompany, getCompanyJobs);
+router.get('/applications/company/', protect, isCompany, getCompanyApplications);
 
-// @route   GET /api/saved-jobs/:userId
-// @desc    Get saved jobs
-// @access  Private
+// Extras
 router.get('/saved-jobs/:userId', protect, getSavedJobs);
 
 module.exports = router;
