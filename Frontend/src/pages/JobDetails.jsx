@@ -12,6 +12,7 @@ const JobDetails = () => {
   
   const [job, setJob] = useState(null);
   const [isApplied, setIsApplied] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch job data
@@ -39,14 +40,36 @@ const JobDetails = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:5000/api/applications', {
-        userId: user._id || user.id,
+      const res = await axios.post('http://localhost:5000/api/applications', {
         jobId: job.id
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
-      alert("Application submitted successfully");
-      setIsApplied(true);
+      if (res.data.success) {
+        alert("Applied successfully");
+        setIsApplied(true);
+      }
     } catch (error) {
-      alert(error.response?.data?.error || "Error applying");
+      alert(error.response?.data?.error || "Apply failed");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    try {
+       const res = await axios.post('http://localhost:5000/api/saved-jobs', {
+         jobId: job.id
+       }, {
+         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+       });
+       if (res.data.success) {
+         setIsSaved(true);
+       }
+    } catch (error) {
+       alert("Error saving job");
     }
   };
 
@@ -87,8 +110,19 @@ const JobDetails = () => {
               </div>
             </div>
             
-            <div className="flex-shrink-0">
-               <button 
+            <div className="flex-shrink-0 flex gap-4">
+                <button 
+                  onClick={handleSave}
+                  disabled={isSaved}
+                  className={`w-full md:w-auto font-bold px-8 py-3.5 rounded-lg transition-colors text-center border ${
+                    isSaved 
+                      ? 'border-purple-500 text-purple-400 bg-purple-900/20'
+                      : 'border-purple-700 hover:bg-purple-900/40 text-white'
+                  }`}
+                >
+                  {isSaved ? '🔖 Saved' : '📑 Save Job'}
+                </button>
+                <button 
                   onClick={handleApply}
                   disabled={isApplied}
                   className={`w-full md:w-auto font-bold px-8 py-3.5 rounded-lg transition-colors text-center shadow-lg ${

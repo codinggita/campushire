@@ -55,6 +55,9 @@ const Login = () => {
 
       // Store user data
       loginUser(data.user);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
 
       // Redirect
       navigate('/dashboard');

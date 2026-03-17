@@ -1,9 +1,43 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import BackButton from '../components/BackButton';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const StudentDashboard = ({ user, navigate }) => {
+  const [applications, setApplications] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [interviews, setInterviews] = useState([
+    { id: 1, title: 'Frontend Developer', company: 'TechNova Inc.', date: '25 March 2026', reminder: 'Prepare for frontend interview' }
+  ]);
+  
+  useEffect(() => {
+    const fetchApps = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://localhost:5000/api/applications/user', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        // Construct applications array assuming res.data matches backend payload { appliedJobs: [], status: [] }
+        if (res.data.appliedJobs) {
+          const formatted = res.data.appliedJobs.map((job, idx) => ({
+            _id: job?._id,
+            title: job?.title || 'Unknown Job',
+            company: job?.company || 'Unknown Company',
+            status: res.data.status[idx] || 'pending',
+            appliedDate: new Date().toLocaleDateString() // mock date for now if not provided
+          }));
+          setApplications(formatted);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user applications', err);
+      }
+    };
+    fetchApps();
+  }, []);
+
   return (
     <>
       {/* Welcome Section */}
@@ -79,9 +113,64 @@ const StudentDashboard = ({ user, navigate }) => {
             <div className="bg-yellow-400 h-2.5 rounded-full" style={{ width: '65%' }}></div>
           </div>
           <p className="text-gray-400 text-sm mb-2 text-left w-full">65% Completed</p>
-          <button className="mt-auto px-4 py-2 border border-purple-700 hover:bg-purple-900/40 rounded-lg text-white font-medium transition-colors w-full">
+          <button onClick={() => navigate('/profile')} className="mt-auto px-4 py-2 border border-purple-700 hover:bg-purple-900/40 rounded-lg text-white font-medium transition-colors w-full">
             Update Profile
           </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+        {/* Applied Jobs List */}
+        <div className="lg:col-span-2 bg-[#1A1625] border border-purple-900 rounded-xl p-6 shadow-lg shadow-black/20">
+          <h3 className="text-xl font-bold text-white mb-6 border-b border-purple-900 pb-4">Recent Applications</h3>
+          <div className="space-y-4">
+            {applications.length > 0 ? applications.map((app, index) => (
+              <div key={index} className="flex justify-between items-center bg-[#0F0B1A] p-4 rounded-lg border border-purple-900/50">
+                <div>
+                   <h4 className="text-white font-bold">{app.title}</h4>
+                   <p className="text-gray-400 text-sm">{app.company}</p>
+                   <p className="text-xs text-gray-500 mt-1">Applied: {app.appliedDate}</p>
+                </div>
+                <div className="text-right">
+                   <span className={`px-3 py-1 text-xs font-bold rounded-full ${
+                     app.status === 'pending' ? 'bg-yellow-400/10 text-yellow-400 border border-yellow-400/20' : 
+                     'bg-green-400/10 text-green-400 border border-green-400/20'
+                   }`}>
+                     {app.status.toUpperCase()}
+                   </span>
+                </div>
+              </div>
+            )) : (
+               <p className="text-gray-400 text-sm">No applications found.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Calendar / Upcoming Interviews */}
+        <div className="bg-[#1A1625] border border-purple-900 rounded-xl p-6 shadow-lg shadow-black/20">
+          <h3 className="text-xl font-bold text-white mb-6 border-b border-purple-900 pb-4 flex items-center justify-between">
+            <span>Interview Calendar</span>
+          </h3>
+          <div className="space-y-6">
+            <div className="bg-white text-black p-2 rounded-lg">
+              <Calendar value={date} onChange={setDate} className="w-full border-none" />
+            </div>
+            
+            <div className="mt-4 space-y-4">
+              <h4 className="text-lg font-bold text-white mb-2">Upcoming Interviews</h4>
+              {interviews.length > 0 ? interviews.map(interview => (
+                <div key={interview.id} className="relative pl-6 border-l-2 border-purple-600 bg-[#0F0B1A] p-4 rounded-lg">
+                  <div className="absolute w-3 h-3 bg-purple-600 rounded-full -left-[7px] top-5"></div>
+                  <h4 className="text-white font-bold text-lg">{interview.title}</h4>
+                  <p className="text-purple-400 font-medium text-sm mt-1">{interview.company}</p>
+                  <p className="text-gray-300 text-sm mt-2 font-semibold">Interview on: {interview.date}</p>
+                  <p className="text-gray-500 text-xs mt-1">Reminder: "{interview.reminder}"</p>
+                </div>
+              )) : (
+                 <p className="text-gray-400 text-sm">No upcoming interviews.</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -56,6 +56,7 @@ const Jobs = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [appliedJobs, setAppliedJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState([]);
   const [feedbackMsg, setFeedbackMsg] = useState('');
   
   // Filter States
@@ -106,15 +107,36 @@ const Jobs = () => {
       return;
     }
     try {
-      // POST /api/applications is the required format from the prompt. We use the full URL if needed, but since we are using axios maybe just 'http://localhost:5000/api/applications'
-      await axios.post('http://localhost:5000/api/applications', {
-        userId: user._id || user.id, // Depending on backend. Usually user._id.
+      const res = await axios.post('http://localhost:5000/api/applications', {
         jobId: jobId
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
-      alert("Application submitted successfully");
-      setAppliedJobs(prev => [...prev, jobId]);
+      if (res.data.success) {
+        alert("Applied successfully");
+        setAppliedJobs(prev => [...prev, jobId]);
+      }
     } catch (error) {
-      alert(error.response?.data?.error || "Error applying");
+      alert(error.response?.data?.error || "Apply failed");
+    }
+  };
+
+  const handleSave = async (jobId) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const res = await axios.post('http://localhost:5000/api/saved-jobs', {
+        jobId: jobId
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      if (res.data.success) {
+        setSavedJobs(prev => [...prev, jobId]);
+      }
+    } catch (error) {
+      alert("Error saving job");
     }
   };
 
@@ -340,11 +362,11 @@ const Jobs = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex md:flex-col gap-3 ml-18 md:ml-0 md:min-w-[140px]">
+                    <div className="flex flex-col gap-3 ml-18 md:ml-0 md:min-w-[140px]">
                       <button 
                         onClick={() => handleApply(job.id)}
                         disabled={appliedJobs.includes(job.id)}
-                        className={`flex-1 md:flex-none font-semibold px-4 py-2.5 rounded-lg transition-colors text-center shadow-lg ${
+                        className={`flex-1 font-semibold px-4 py-2.5 rounded-lg transition-colors text-center shadow-lg ${
                           appliedJobs.includes(job.id) 
                             ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
                             : 'bg-yellow-400 hover:bg-yellow-300 text-black shadow-yellow-400/20'
@@ -353,8 +375,19 @@ const Jobs = () => {
                         {appliedJobs.includes(job.id) ? 'Applied' : 'Apply Now'}
                       </button>
                       <button 
+                        onClick={() => handleSave(job.id)}
+                        disabled={savedJobs.includes(job.id)}
+                        className={`flex-1 border px-4 py-2.5 rounded-lg transition-colors text-center font-medium ${
+                          savedJobs.includes(job.id)
+                            ? 'border-purple-500 text-purple-400 bg-purple-900/20'
+                            : 'border-purple-700 hover:bg-purple-900/40 text-white'
+                        }`}
+                      >
+                        {savedJobs.includes(job.id) ? '🔖 Saved' : '📑 Save'}
+                      </button>
+                      <button 
                         onClick={() => navigate(`/jobs/${job.id}`)}
-                        className="flex-1 md:flex-none border border-purple-700 hover:bg-purple-900/40 text-white px-4 py-2.5 rounded-lg transition-colors text-center"
+                        className="flex-1 text-sm border-b border-transparent hover:border-purple-400 text-purple-400 text-center pb-0.5 mt-1"
                       >
                         View Details
                       </button>

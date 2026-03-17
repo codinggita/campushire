@@ -39,7 +39,6 @@ const Navbar = () => {
               <Link to="/jobs" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Jobs</Link>
               <Link to="/companies" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Companies</Link>
               <Link to="/dashboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Dashboard</Link>
-              <Link to="/profile" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Profile</Link>
             </div>
           )}
 
@@ -47,15 +46,12 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <div className="flex items-center text-sm mr-4 hidden sm:flex">
-                  <span className="text-gray-400 mr-1">Hello,</span>
-                  <span className="text-white font-medium">{user.name}</span>
-                  <span className="text-purple-400 uppercase text-xs mx-1 font-bold">({user.role})</span>
+                <Link to="/profile" className="flex items-center text-sm mr-4 hidden sm:flex cursor-pointer">
                   {/* Avatar */}
-                  <div className="ml-2 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm border border-purple-400">
+                  <div className="ml-2 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm border border-purple-400 hover:bg-purple-500 transition-colors">
                     {getInitials(user.name)}
                   </div>
-                </div>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="border border-purple-700 hover:bg-purple-900/30 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
