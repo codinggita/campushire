@@ -137,6 +137,8 @@ exports.getMe = async (req, res) => {
             name: req.user.name,
             email: req.user.email,
             role: req.user.role,
+            skills: req.user.skills,
+            companyName: req.user.companyName
         };
         res.status(200).json(user);
     } catch (error) {
