@@ -8,12 +8,7 @@ import Jobs from './pages/Jobs';
 
 import JobDetails from './pages/JobDetails';
 
-const Dashboard = () => (
-  <div className="min-h-screen pt-20 flex flex-col items-center justify-center bg-[#0F0B1A]">
-    <h1 className="text-4xl font-extrabold text-white">Welcome to your <span className="text-yellow-400">Dashboard</span></h1>
-  </div>
-);
-
+import Dashboard from './pages/Dashboard';
 function App() {
   return (
     <Router>

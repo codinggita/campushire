@@ -38,13 +38,14 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-gray-300 font-medium text-sm hidden sm:block">
-                  <span className="text-gray-500 mr-2">Hello,</span>
-                  {user.name} <span className="text-xs text-purple-400 uppercase ml-1 flex-shrink-0">({user.role})</span>
-                </span>
+                <div className="flex items-center text-sm mr-2 hidden sm:flex">
+                  <span className="text-gray-400 mr-1">Hello,</span>
+                  <span className="text-white font-medium">{user.name}</span>
+                  <span className="text-purple-400 uppercase text-xs ml-1 font-bold">({user.role})</span>
+                </div>
                 <button
                   onClick={handleLogout}
-                  className="bg-transparent border border-gray-700 hover:bg-white/5 hover:border-gray-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
+                  className="border border-purple-700 hover:bg-purple-900/30 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
                 >
                   Logout
                 </button>
