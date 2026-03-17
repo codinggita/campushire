@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { mockJobs } from './Jobs';
+import BackButton from '../components/BackButton';
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const JobDetails = () => {
   
   const [job, setJob] = useState(null);
   const [isApplied, setIsApplied] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch job data
@@ -38,14 +40,36 @@ const JobDetails = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:5000/api/applications', {
-        userId: user._id || user.id,
+      const res = await axios.post('http://localhost:5000/api/applications', {
         jobId: job.id
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
-      alert("Application submitted successfully");
-      setIsApplied(true);
+      if (res.data.success) {
+        alert("Applied successfully");
+        setIsApplied(true);
+      }
     } catch (error) {
-      alert("Application failed");
+      alert(error.response?.data?.error || "Apply failed");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    try {
+       const res = await axios.post('http://localhost:5000/api/saved-jobs', {
+         jobId: job.id
+       }, {
+         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+       });
+       if (res.data.success) {
+         setIsSaved(true);
+       }
+    } catch (error) {
+       alert("Error saving job");
     }
   };
 
@@ -71,15 +95,7 @@ const JobDetails = () => {
   return (
     <div className="min-h-screen bg-[#0F0B1A] pt-24 pb-12 px-4 sm:px-6 lg:px-8 text-white font-sans">
       <div className="max-w-4xl mx-auto">
-        <button 
-          onClick={() => navigate('/jobs')}
-          className="flex items-center text-purple-400 hover:text-purple-300 mb-8 transition-colors"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to List
-        </button>
+        <BackButton />
 
         <div className="bg-[#1A1625] border border-purple-900 rounded-2xl p-8 md:p-10 shadow-xl shadow-black/20">
           {/* Header */}
@@ -94,8 +110,19 @@ const JobDetails = () => {
               </div>
             </div>
             
-            <div className="flex-shrink-0">
-               <button 
+            <div className="flex-shrink-0 flex gap-4">
+                <button 
+                  onClick={handleSave}
+                  disabled={isSaved}
+                  className={`w-full md:w-auto font-bold px-8 py-3.5 rounded-lg transition-colors text-center border ${
+                    isSaved 
+                      ? 'border-purple-500 text-purple-400 bg-purple-900/20'
+                      : 'border-purple-700 hover:bg-purple-900/40 text-white'
+                  }`}
+                >
+                  {isSaved ? '🔖 Saved' : '📑 Save Job'}
+                </button>
+                <button 
                   onClick={handleApply}
                   disabled={isApplied}
                   className={`w-full md:w-auto font-bold px-8 py-3.5 rounded-lg transition-colors text-center shadow-lg ${
