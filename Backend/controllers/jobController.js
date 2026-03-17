@@ -5,6 +5,22 @@ const Application = require('../models/Application');
 // @desc    Get all jobs (with search, filter, and pagination)
 // @route   GET /api/jobs
 // @access  Public
+exports.getJobById = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+    res.json({ success: true, job });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(404).json({ error: "Job not found" });
+    }
+    console.error('Error fetching job details:', error);
+    res.status(500).json({ error: "Server error fetching job details" });
+  }
+};
+
 exports.getJobs = async (req, res) => {
   try {
     const { 
@@ -95,42 +111,46 @@ exports.applyJob = async (req, res) => {
       return res.status(400).json({ error: 'Please provide both userId and jobId' });
     }
 
-    // 1. Check User exists
-    const userExists = await User.findById(userId);
-    if (!userExists) {
-      return res.status(404).json({ error: 'User does not exist' });
-    }
-
-    // 2. Check Job exists
-    const jobExists = await Job.findById(jobId);
-    if (!jobExists) {
-      return res.status(404).json({ error: 'Job does not exist' });
-    }
-
-    // 3. Prevent duplicate applications
+    // 1. Check if user already applied
     const existingApplication = await Application.findOne({ userId, jobId });
     if (existingApplication) {
-      return res.status(400).json({ error: 'You have already applied for this job' });
+      return res.status(400).json({ error: "Already applied" });
     }
 
-    // Create Application
-    const newApp = await Application.create({
+    // Save new application
+    await Application.create({
       userId,
       jobId,
     });
 
-    res.status(201).json({
+    res.json({
       success: true,
-      message: 'Application successful',
-      data: newApp,
+      message: "Application submitted successfully"
     });
 
-  } catch (error) {
+    } catch (error) {
     console.error('Error applying for job:', error);
     if (error.code === 11000) {
-      // MongoDB duplicate key error index fallback
-      return res.status(400).json({ error: 'You have already applied for this job' });
+      return res.status(400).json({ error: "Already applied" });
     }
     res.status(500).json({ error: 'Server error processing application' });
+  }
+};
+
+exports.getUserApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({ userId: req.params.id }).populate('jobId');
+    res.json({ success: true, applications });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.getSavedJobs = async (req, res) => {
+  try {
+    // Missing saved job schema for now, returning empty array
+    res.json({ success: true, savedJobs: [] });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
   }
 };

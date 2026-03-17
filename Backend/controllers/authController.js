@@ -1,5 +1,12 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret_key', {
+        expiresIn: '30d',
+    });
+};
 
 exports.login = async (req, res) => {
     try {
@@ -17,7 +24,8 @@ exports.login = async (req, res) => {
         
         return res.status(200).json({
             message: 'Login successful',
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token: generateToken(user._id)
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
@@ -40,7 +48,8 @@ exports.studentLogin = async (req, res) => {
         
         return res.status(200).json({
             message: 'Student login successful',
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token: generateToken(user._id)
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
@@ -63,7 +72,8 @@ exports.companyLogin = async (req, res) => {
         
         return res.status(200).json({
             message: 'Company login successful',
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token: generateToken(user._id)
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
@@ -85,7 +95,11 @@ exports.studentRegister = async (req, res) => {
         const user = new User({ name, email, password: hashedPassword, role: 'student', skills });
         await user.save();
         
-        return res.status(201).json({ message: 'Student registered successfully' });
+        return res.status(201).json({ 
+            message: 'Student registered successfully',
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token: generateToken(user._id)
+        });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -106,8 +120,26 @@ exports.companyRegister = async (req, res) => {
         const user = new User({ name, email, password: hashedPassword, role: 'company', companyName });
         await user.save();
         
-        return res.status(201).json({ message: 'Company registered successfully' });
+        return res.status(201).json({ 
+            message: 'Company registered successfully',
+            user: { id: user._id, name: user.name, email: user.email, role: user.role },
+            token: generateToken(user._id)
+        });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = {
+            id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            role: req.user.role,
+        };
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
     }
 };

@@ -11,10 +11,14 @@ const ApplicationSchema = new mongoose.Schema({
     ref: 'Job',
     required: true,
   },
-  appliedAt: {
+  appliedDate: {
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    default: "pending",
+  }
 });
 
 // Prevent duplicate applications
