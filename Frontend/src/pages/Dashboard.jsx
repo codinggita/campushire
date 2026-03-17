@@ -13,6 +13,7 @@ const StudentDashboard = ({ user, navigate }) => {
         <p className="text-lg text-gray-400">
           {user.name} ({user.role?.toUpperCase()})
         </p>
+        <p className="text-sm text-gray-500 mt-1">{user.email}</p>
       </div>
 
       {/* Dashboard Cards Content */}
@@ -97,6 +98,7 @@ const CompanyDashboard = ({ user, navigate }) => {
         <p className="text-lg text-gray-400">
           {user.name} ({user.role?.toUpperCase()})
         </p>
+        <p className="text-sm text-gray-500 mt-1">{user.email}</p>
       </div>
 
       {/* Dashboard Cards Content */}

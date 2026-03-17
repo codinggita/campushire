@@ -26,13 +26,15 @@ const Navbar = () => {
           </div>
 
           {/* Center navigation */}
-          <div className="hidden md:flex items-center space-x-10">
-            <Link to="/" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Home</Link>
-            <Link to="/jobs" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Jobs</Link>
-            <Link to="/companies" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Companies</Link>
-            <Link to="/students" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Students</Link>
-            <Link to="/about" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">About</Link>
-          </div>
+          {user && (
+            <div className="hidden md:flex items-center space-x-10">
+              <Link to="/" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Home</Link>
+              <Link to="/jobs" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Jobs</Link>
+              <Link to="/companies" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Companies</Link>
+              <Link to="/dashboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Dashboard</Link>
+              <Link to="/profile" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Profile</Link>
+            </div>
+          )}
 
           {/* Right: Actions */}
           <div className="flex items-center space-x-4">

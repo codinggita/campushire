@@ -101,7 +101,7 @@ const Jobs = () => {
 
   const handleApply = async (jobId) => {
     if (!user) {
-      alert("Please login to apply");
+      navigate('/login');
       return;
     }
     try {
@@ -254,7 +254,7 @@ const Jobs = () => {
                   </div>
                 </div>
                 <div className="text-xs text-gray-500 mt-2 text-center">
-                  Showing: ${salaryRange.min.toLocaleString()} — ${salaryRange.max.toLocaleString()}
+                  Showing: ₹{salaryRange.min.toLocaleString('en-IN')} — ₹{salaryRange.max.toLocaleString('en-IN')}
                 </div>
               </div>
 
@@ -326,7 +326,7 @@ const Jobs = () => {
                             <svg className="w-4 h-4 mr-1.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            ${(job.salary / 1000).toFixed(0)}k
+                            {new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(job.salary)}
                           </span>
                           <span className="flex items-center text-sm text-gray-400 bg-[#0F0B1A] px-3 py-1 rounded-full border border-purple-900/50">
                             <svg className="w-4 h-4 mr-1.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

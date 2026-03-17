@@ -7,8 +7,8 @@ import Home from './pages/Home';
 import Jobs from './pages/Jobs';
 
 import JobDetails from './pages/JobDetails';
-
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 function App() {
   return (
     <Router>
@@ -20,6 +20,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:id" element={<JobDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

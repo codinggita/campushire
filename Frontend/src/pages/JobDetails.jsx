@@ -34,7 +34,7 @@ const JobDetails = () => {
 
   const handleApply = async () => {
     if (!user) {
-      alert("Please login to apply");
+      navigate('/login');
       return;
     }
     try {
@@ -121,7 +121,7 @@ const JobDetails = () => {
             </div>
             <div className="bg-[#0F0B1A] border border-purple-900/50 rounded-xl p-4">
               <div className="text-gray-400 text-sm mb-1">Salary</div>
-              <div className="font-semibold text-green-400">${job.salary.toLocaleString()}</div>
+              <div className="font-semibold text-green-400">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(job.salary)}</div>
             </div>
             <div className="bg-[#0F0B1A] border border-purple-900/50 rounded-xl p-4">
               <div className="text-gray-400 text-sm mb-1">Experience</div>
