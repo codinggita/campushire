@@ -1,6 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import BackButton from '../components/BackButton';
+
+function getInitials(name) {
+  if (!name) return "";
+  const words = name.trim().split(" ");
+  if (words.length === 1) return words[0][0].toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
@@ -19,6 +27,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-[#0F0B1A] pt-24 pb-12 px-4 sm:px-6 lg:px-8 text-white font-sans">
       <div className="max-w-3xl mx-auto">
+        <BackButton />
         
         {/* Header */}
         <div className="mb-10 text-center">
@@ -32,7 +41,7 @@ const Profile = () => {
         <div className="bg-[#1A1625] border border-purple-900 rounded-2xl p-8 shadow-xl shadow-black/20">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-purple-900/50 pb-8 mb-8">
             <div className="w-24 h-24 bg-purple-900/50 text-purple-400 border border-purple-700 rounded-full flex flex-shrink-0 items-center justify-center text-4xl font-bold uppercase overflow-hidden">
-               {user.name.charAt(0)}
+               {getInitials(user.name)}
             </div>
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>

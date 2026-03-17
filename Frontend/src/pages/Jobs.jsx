@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import BackButton from '../components/BackButton';
 
 export const mockJobs = [
   {
@@ -113,14 +114,14 @@ const Jobs = () => {
       alert("Application submitted successfully");
       setAppliedJobs(prev => [...prev, jobId]);
     } catch (error) {
-      alert("Application failed");
+      alert(error.response?.data?.error || "Error applying");
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0F0B1A] pt-24 pb-12 px-4 sm:px-6 lg:px-8 text-white font-sans">
       <div className="max-w-7xl mx-auto">
-        
+        <BackButton />
         {/* Page Header */}
         <div className="mb-10 text-center lg:text-left">
           <h1 className="text-3xl md:text-5xl font-extrabold mb-4 text-white">Find Your Next <span className="text-purple-400">Opportunity</span></h1>

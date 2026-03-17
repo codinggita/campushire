@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import BackButton from '../components/BackButton';
 
 const StudentDashboard = ({ user, navigate }) => {
   return (
@@ -184,6 +185,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#0F0B1A] flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 lg:px-8 text-white font-sans">
       <div className="max-w-6xl w-full">
+        <BackButton />
         {user.role === 'student' ? (
           <StudentDashboard user={user} navigate={navigate} />
         ) : (

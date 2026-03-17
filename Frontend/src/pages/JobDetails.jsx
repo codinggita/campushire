@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { mockJobs } from './Jobs';
+import BackButton from '../components/BackButton';
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -45,7 +46,7 @@ const JobDetails = () => {
       alert("Application submitted successfully");
       setIsApplied(true);
     } catch (error) {
-      alert("Application failed");
+      alert(error.response?.data?.error || "Error applying");
     }
   };
 
@@ -71,15 +72,7 @@ const JobDetails = () => {
   return (
     <div className="min-h-screen bg-[#0F0B1A] pt-24 pb-12 px-4 sm:px-6 lg:px-8 text-white font-sans">
       <div className="max-w-4xl mx-auto">
-        <button 
-          onClick={() => navigate('/jobs')}
-          className="flex items-center text-purple-400 hover:text-purple-300 mb-8 transition-colors"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to List
-        </button>
+        <BackButton />
 
         <div className="bg-[#1A1625] border border-purple-900 rounded-2xl p-8 md:p-10 shadow-xl shadow-black/20">
           {/* Header */}

@@ -2,6 +2,13 @@ import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
+function getInitials(name) {
+  if (!name) return "";
+  const words = name.trim().split(" ");
+  if (words.length === 1) return words[0][0].toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -40,10 +47,14 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <div className="flex items-center text-sm mr-2 hidden sm:flex">
+                <div className="flex items-center text-sm mr-4 hidden sm:flex">
                   <span className="text-gray-400 mr-1">Hello,</span>
                   <span className="text-white font-medium">{user.name}</span>
-                  <span className="text-purple-400 uppercase text-xs ml-1 font-bold">({user.role})</span>
+                  <span className="text-purple-400 uppercase text-xs mx-1 font-bold">({user.role})</span>
+                  {/* Avatar */}
+                  <div className="ml-2 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm border border-purple-400">
+                    {getInitials(user.name)}
+                  </div>
                 </div>
                 <button
                   onClick={handleLogout}
