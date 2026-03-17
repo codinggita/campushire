@@ -118,10 +118,13 @@ exports.applyJob = async (req, res) => {
     }
 
     // Save new application
-    await Application.create({
+    const newApplication = new Application({
       userId,
       jobId,
+      appliedDate: new Date(),
+      status: "pending"
     });
+    await newApplication.save();
 
     res.json({
       success: true,
